@@ -1,4 +1,7 @@
 class UsersController < ApplicationController
+  before_filter :require_no_user, :only => [:new, :create]
+  before_filter :require_user, :only => [:show, :edit, :update]
+
   # GET /users
   # GET /users.xml
   def index
@@ -41,34 +44,34 @@ class UsersController < ApplicationController
   # POST /users.xml
   def create
     @user = User.new(params[:user])
-
-    respond_to do |format|
-      if @user.save
-        flash[:notice] = 'User was successfully created.'
-        format.html { redirect_to(@user) }
-        format.xml  { render :xml => @user, :status => :created, :location => @user }
+    @user.save do |result|
+      if result
+        flash[:notice] = "Login successful!"
+        #redirect_back_or_default users_url
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
+        unless @user.oauth_token.nil?
+          @user = User.find_by_oauth_token(@user.oauth_token)
+          unless @user.nil?
+            UserSession.create(@user)
+            #InitializeUserSession(@user)
+            session[:atoken] = @user.oauth_token
+            session[:asecret] = @user.oauth_secret
+            flash[:notice] = "Welcome back!"
+            redirect_to users_url        
+          else
+            #redirect_back_or_default root_path
+            #redirect_to users_url   
+          end
+        end
+       # render :action => :new
       end
     end
+    #redirect_to users_url 
+    #return
   end
-
-  # PUT /users/1
-  # PUT /users/1.xml
-  def update
-    @user = User.find(params[:id])
-
-    respond_to do |format|
-      if @user.update_attributes(params[:user])
-        flash[:notice] = 'User was successfully updated.'
-        format.html { redirect_to(@user) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
-      end
-    end
+  
+  def show
+    @user = @current_user
   end
 
   # DELETE /users/1

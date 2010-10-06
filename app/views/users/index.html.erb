@@ -16,5 +16,5 @@
 </table>
 
 <br />
-
+<%= link_to 'Logout', user_session_path, :confirm => 'Are you sure?', :method => :delete,:controller=>:user_sessions_controller %>
 <%= link_to 'New user', new_user_path %>
