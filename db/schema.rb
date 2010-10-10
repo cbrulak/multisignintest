@@ -9,7 +9,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101005000706) do
+ActiveRecord::Schema.define(:version => 20101010072350) do
+
+  create_table "open_id_authentication_associations", :force => true do |t|
+    t.integer "issued"
+    t.integer "lifetime"
+    t.string  "handle"
+    t.string  "assoc_type"
+    t.binary  "server_url"
+    t.binary  "secret"
+  end
+
+  create_table "open_id_authentication_nonces", :force => true do |t|
+    t.integer "timestamp",  :null => false
+    t.string  "server_url"
+    t.string  "salt",       :null => false
+  end
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
@@ -25,6 +40,7 @@ ActiveRecord::Schema.define(:version => 20101005000706) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "login"
+    t.string   "fullname"
     t.string   "crypted_password"
     t.string   "password_salt"
     t.string   "persistence_token",                :null => false
@@ -36,6 +52,8 @@ ActiveRecord::Schema.define(:version => 20101005000706) do
     t.string   "current_login_ip"
     t.string   "oauth_token"
     t.string   "oauth_secret"
+    t.string   "openid_url"
+    t.string   "email"
   end
 
   add_index "users", ["last_request_at"], :name => "index_users_on_last_request_at"
