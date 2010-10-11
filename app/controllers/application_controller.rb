@@ -1,10 +1,15 @@
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
+require_dependency "openid_login_system"
+
 class ApplicationController < ActionController::Base
   helper :all
   helper_method :current_user_session, :current_user
   filter_parameter_logging :password, :password_confirmation
+  
+  include OpenidLoginSystem
+  #model :user
   
   private
     def current_user_session

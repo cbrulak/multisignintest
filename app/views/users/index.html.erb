@@ -8,7 +8,7 @@
 <% @users.each do |user| %>
   <tr>
     <td><%=h user.login %></td>
-    <td><%= link_to 'Show', user %></td>
+    <td><%= link_to 'Show', user_path(user) %></td>
     <td><%= link_to 'Edit', edit_user_path(user) %></td>
     <td><%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
@@ -16,5 +16,5 @@
 </table>
 
 <br />
-<%= link_to 'Logout', user_session_path, :confirm => 'Are you sure?', :method => :delete,:controller=>:user_sessions_controller %>
+<%= link_to 'Logout', @current_user_session, :confirm => 'Are you sure?', :method => :delete %>
 <%= link_to 'New user', new_user_path %>

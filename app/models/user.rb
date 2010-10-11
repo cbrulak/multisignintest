@@ -1,5 +1,12 @@
+
+# this model expects a certain database layout and its based on the name/login pattern. 
 class User < ActiveRecord::Base
-  acts_as_authentic
+  acts_as_authentic do |c| 
+    c.validate_login_field = false
+    c.validate_password_field = false
+    # optional, but if a user registers by openid, he should at least share his email-address with the app
+    c.validate_email_field = false
+  end
   
   before_create :populate_oauth_user 
  
@@ -7,6 +14,7 @@ class User < ActiveRecord::Base
 
   def populate_oauth_user
     unless oauth_token.blank?
+      debugger
       @response = UserSession.oauth_consumer.request(:get, '/account/verify_credentials.json',
       access_token, { :scheme => :query_string })
       case @response
@@ -23,4 +31,15 @@ class User < ActiveRecord::Base
       end
     end
   end
+
+
+  def self.get(openid_url)
+    find_first(["openid_url = ?", openid_url])
+  end  
+  
+
+  protected
+  
+  validates_uniqueness_of :openid_url, :on => :create
+  #validates_presence_of :openid_url
 end

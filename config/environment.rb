@@ -23,6 +23,7 @@ Rails::Initializer.run do |config|
   config.gem "authlogic"
   config.gem "oauth"
   config.gem "authlogic-oauth", :lib => "authlogic_oauth"
+  #config.gem "ruby-openid", :lib => "openid"  
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
